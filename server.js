@@ -46,7 +46,7 @@ Introduce a structured decision-making method (e.g., pros and cons, ranking, etc
 Summarize key discussion moments so far.
 Use light humor to defuse tension when appropriate.
 
-Be brief in your comment, stating what you noticed and suggesting what to do.
+Be very brief in your response, stating what you noticed and suggesting what to do. Address participants in a way that is not prompting them to speak with you, but rather with each other.
 You will notice repetitions in words and sentences in the transcript - ignore them, this is a problem with the transcription system.
 In all your interventions, remember: Your goal is to support better collaboration, not to direct the content of the discussion. Because you will respond participants with some delay, you shouldn't try to interact specifically to their last message, but make more general observations.`;
 
@@ -195,14 +195,14 @@ wss.on('connection', (ws) => {
                             const content = openaiResponse.choices[0].message.content;
                             console.log('✅ OpenAI response received');
         
-                            // Send response back to frontend
-                            ws.send(JSON.stringify({
-                                type: 'openai-response',
-                                data: {
-                                    text: content,
-                                    timestamp: new Date().toISOString()
+                            wss.clients.forEach(client => {
+                                if (client.readyState === WebSocket.OPEN) {
+                                    client.send(JSON.stringify({
+                                        type: 'openai-response',
+                                        data: { text: content, timestamp: new Date().toISOString() }
+                                    }));
                                 }
-                            }));
+                            });
                         } else {
                             console.warn('⚠️ OpenAI response missing expected content');
                             ws.send(JSON.stringify({
@@ -210,6 +210,17 @@ wss.on('connection', (ws) => {
                                 data: { error: 'OpenAI returned no valid response.' }
                             }));
                         }
+                    } else if (type === 'release-response') {
+                        console.log('📣 Facilitator triggered response release');
+                    
+                        wss.clients.forEach(client => {
+                            if (client.readyState === WebSocket.OPEN) {
+                                client.send(JSON.stringify({
+                                    type: 'release-response',
+                                    timestamp: new Date().toISOString()
+                                }));
+                            }
+                        });
                     } else {
                         console.log('⚠️ Unknown message type:', type);
                     }

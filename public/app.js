@@ -92,12 +92,21 @@ class InteractionObserver {
         const releaseButton = document.getElementById('release-response');
         if (releaseButton) {
             releaseButton.disabled = true; // Initially disabled
+            
             releaseButton.addEventListener('click', () => {
                 if (this.pendingResponse) {
                     console.log('Releasing response:', this.pendingResponse);
 
                     // Add the response to the transcript
                     this.addResponseToTranscript(this.pendingResponse);
+
+                    // 🔄 NEW: Send "release-response" to all clients (including participant)
+                    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                        this.ws.send(JSON.stringify({
+                            type: 'release-response',
+                            timestamp: new Date().toISOString()
+                        }));
+                    }
 
                     // Show in the pulse response box
                     const coachBox = document.getElementById('coach-response-box');
