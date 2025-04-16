@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaction Observer Panel</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@deepgram/sdk"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="panel">
+            <h2>Observer Panel</h2>
+            <div class="trigger-buttons">
+                <button class="trigger-btn" data-trigger="off-track">Going Off Track</button>
+                <button class="trigger-btn" data-trigger="missing-voice">Missing Voice</button>
+                <button class="trigger-btn" data-trigger="unprompted-justification">Defensiveness</button>
+                <button class="trigger-btn" data-trigger="too-abstract">Superficial and abstract</button>
+            </div>
+
+            <div class = "release-section">
+                <button id="release-response" disabled>Release Response</button>
+            </div>
+        </div>
+        
+        <div class="transcript-panel">
+            <h2>Live Transcript</h2>
+            <div id="transcript-container"></div>
+            <div id="debug-info" style="margin-top: 20px; color: #666;"></div>
+        </div>
+
+        <div class="response-indicator"> <!-- Right panel -->
+            <div id="pulse-circle" class="pulse-inert"></div>
+            <div id="coach-response-box" class="coach-response-box" style="display: none;"></div>
+          </div>
+
+    </div>
+    <script src="app.js"></script>
+</body>
+</html> 
